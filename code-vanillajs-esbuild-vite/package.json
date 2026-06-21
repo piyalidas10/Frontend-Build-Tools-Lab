@@ -1,0 +1,21 @@
+{
+  "name": "code-vanillajs-esbuild-vite",
+  "version": "1.0.0",
+  "description": "Vanilla JavaScript + Vite + ESBuild together",
+  "keywords": [
+    "js",
+    "vite",
+    "esbuild"
+  ],
+  "author": "Piyali Das",
+  "license": "ISC",
+  "scripts": {
+    "dev": "vite",
+    "build": "node build.js",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^7.0.0",
+    "esbuild": "^0.25.0"
+  }  
+}
