@@ -204,6 +204,15 @@ import.meta.hot.send() is part of Vite's HMR API and allows a client module to s
 To send real-time events from the browser to the Vite Dev Server, use the built-in HMR WebSocket channel.
 
 
+This only runs in development (since import.meta.hot is only defined in dev mode), making it perfect for debugging or building custom dev features.
+
+- Use import.meta.hot.send() to send events to the dev server
+- Handle them in vite.config.ts via server.ws.on(...)
+- To go the opposite way use import.meta.hot.on() in the browser and server.ws.send on the Vite server
+- Works great for dev-only workflows, no extra network layer needed
+
+This is a super useful trick for building smoother tooling experiences, interactive playgrounds, or advanced logging without any production impact.
+
 **Important Limitation**
 
 import.meta.hot.send() only works when:
