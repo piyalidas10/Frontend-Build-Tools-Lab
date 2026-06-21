@@ -9,5 +9,30 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   server: {
     port: 3000
-  }
+  },
+  // This gives you a real-time event channel between your SPA and the Vite dev server while running npm run dev.
+  plugins: [
+    {
+      name: 'custom-events',
+
+      configureServer(server) {
+        server.ws.on('app:initialized', (data) => {
+          console.log('App initialized:', data);
+        });
+
+        server.ws.on('route:changed', (data) => {
+          console.log('Route changed:', data);
+        });
+
+        server.ws.on('settings:saved', (data) => {
+          console.log('Settings saved:', data);
+
+          server.ws.send('server:event', {
+            status: 'received',
+            timestamp: Date.now()
+          });
+        });
+      }
+    }
+  ]
 });

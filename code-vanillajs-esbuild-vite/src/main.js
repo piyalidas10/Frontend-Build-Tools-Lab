@@ -5,6 +5,13 @@ import { router } from './router/router';
 async function initializeApp() {
   try {
     await router();
+
+    if (import.meta.hot) {
+      import.meta.hot.send('app:initialized', {
+        url: location.pathname,
+        timestamp: Date.now()
+      });
+    }
   } catch (error) {
     console.error('Application initialization failed:', error);
 
@@ -29,32 +36,34 @@ document.addEventListener('click', async (event) => {
   history.pushState({}, '', href);
 
   await router();
+
+  if (import.meta.hot) {
+    import.meta.hot.send('route:changed', {
+      path: href,
+      timestamp: Date.now()
+    });
+  }
 });
 
 window.addEventListener('popstate', async () => {
   await router();
+
+  if (import.meta.hot) {
+    import.meta.hot.send('route:changed', {
+      path: location.pathname,
+      timestamp: Date.now()
+    });
+  }
 });
 
 document.addEventListener('submit', (event) => {
-
-  if (
-    event.target.id === 'settings-form'
-  ) {
-
+  if (event.target.id === 'settings-form') {
     event.preventDefault();
 
     const settings = {
-      username:
-        document.getElementById('username')
-          .value,
-
-      email:
-        document.getElementById('email')
-          .value,
-
-      theme:
-        document.getElementById('theme')
-          .value
+      username: document.getElementById('username').value,
+      email: document.getElementById('email').value,
+      theme: document.getElementById('theme').value
     };
 
     localStorage.setItem(
@@ -62,8 +71,28 @@ document.addEventListener('submit', (event) => {
       JSON.stringify(settings)
     );
 
+    if (import.meta.hot) {
+      import.meta.hot.send('settings:saved', {
+        settings,
+        timestamp: Date.now()
+      });
+    }
+
     alert('Settings saved');
   }
 });
 
 window.addEventListener('DOMContentLoaded', initializeApp);
+
+/* Vite HMR */
+if (import.meta.hot) {
+  import.meta.hot.accept();
+
+  import.meta.hot.on('server:event', (data) => {
+    console.log('Message from Vite server:', data);
+  });
+
+  import.meta.hot.dispose(() => {
+    console.log('Module disposed');
+  });
+}

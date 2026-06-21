@@ -189,6 +189,67 @@ Developer saves file
 Replace updated module
 ```
 
+**How Vite Uses WebSockets**
+- The Connection: When you open your application in a browser, a built-in Vite client script establishes a persistent WebSocket connection (ws:// or wss://) back to the Vite dev server.
+- File Watching: The server constantly monitors your source files for changes.
+- Push Notification: The moment you save an edit, Vite computes the change and pushes a lightweight JSON payload over the open WebSocket to the browser.
+
+## HMR vs. Live Reloading
+The WebSocket payload tells the browser client exactly how to handle the update depending on what changed:
+- Hot Module Replacement (HMR): If the modified code is within a module that supports hot swapping (like a Vue, Svelte, or React component), the WebSocket message sends the path of the updated file. The Vite client then dynamically re-imports only that module using native ES Modules (import()), swapping out the code in milliseconds without losing your application's current state.
+- Live Reloading (Full Reload): If you change a file that does not have an active HMR boundary handler (like a raw configuration file or a generic HTML template), Vite handles it via a fallback. The WebSocket server sends a full-reload instruction, and the Vite client forces a standard browser refresh (location.reload())
+
+## Send Real-Time Events from Browser to Vite Dev Server
+import.meta.hot.send() is part of Vite's HMR API and allows a client module to send custom events to the Vite dev server during development. 
+To send real-time events from the browser to the Vite Dev Server, use the built-in HMR WebSocket channel.
+
+
+**Important Limitation**
+
+import.meta.hot.send() only works when:
+```
+npm run dev
+```
+because it uses Vite's development WebSocket. After:
+```
+npm run build
+npm run preview
+```
+or in production behind Nginx/Node.js, import.meta.hot is removed and the API no longer exists.
+
+For production real-time communication, use:
+- Native WebSocket
+- Socket.IO
+- Server-Sent Events (SSE)
+- SignalR
+- WebTransport
+
+instead of import.meta.hot.send().
+
+**Bidirectional Real-Time Communication**
+```
+┌───────────────┐
+│    Browser    │
+└───────┬───────┘
+        │
+        │ import.meta.hot.send()
+        ▼
+┌────────────────────┐
+│ Vite WebSocket     │
+│ Dev Server         │
+└─────────┬──────────┘
+          │
+          │ server.ws.on()
+          ▼
+     Custom Logic
+          │
+          │ server.ws.send()
+          ▼
+┌───────────────┐
+│    Browser    │
+└───────────────┘
+```
+
 ## Vite Port Configure Permanently
 
 In vite.config.js:
