@@ -75,6 +75,8 @@ Webpack is the legacy giant that powered the industry for nearly a decade. It is
 ✅ Pros: Virtually unlimited customization; remains unmatched for ultra-complex setups like Micro-frontends via Module Federation.
 ✅ Cons: Configuration files easily grow messy, and development server spin-up times can degrade severely as applications grow.
 
+Tutorial : https://webpack.js.org/guides/hot-module-replacement/
+
 ## 📦 Parcel
 Parcel prioritizes absolute ease of use, utilizing a "zero-config" design model.
 ✅ How it works: You direct Parcel straight toward an index.html entry point. It automatically analyzes files, downloads necessary compilers on the fly, and uses file caching to accelerate builds.

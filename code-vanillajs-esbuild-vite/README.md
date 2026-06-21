@@ -11,6 +11,7 @@ Vite already uses ESBuild internally for very fast dependency pre-bundling and T
 This demonstrates hands-on frontend tooling experience because we're controlling both the developer experience (Vite) and the build pipeline (ESBuild) rather than relying entirely on framework defaults.
 
 # Run
+Vite uses port 5173 for its development server and 4173 for its preview server by default. The preview server serves the production build output (dist) and allows developers to validate the production bundle locally before deployment. These ports are arbitrary defaults chosen by Vite and can be customized in vite.config.js or via command-line options.
 
 install dependencies
 ```
@@ -28,7 +29,22 @@ VITE v7.x ready in 200ms
 ➜ Local:   http://localhost:3000/
 ➜ Network: use --host to expose
 ```
+Vite default dev server port is 5173. but i have configured port 3000 in vite.config.js.
+
 <img src="imgs/vite_dev_run.png" width="90%" />
+
+Open:
+```
+http://localhost:3000
+```
+<img src="imgs/dashbaord.png" width="90%" />
+
+Click on Tasks link of left sidebar
+
+<img src="imgs/tasks.png" width="90%" />
+
+Vite uses WebSockets during development for Hot Module Replacement (HMR).     
+<img src="imgs/websocket.png" width="90%" />
 
 
 **Production Build (ESBuild)**
@@ -47,28 +63,46 @@ dist/
  └── ...
 ```
 
-**Preview Production Build**
-
-If using Vite:
+**Vite Preview**
+Run:
+```
+npm run build
+```
+run preview
 ```
 npm run preview
 ```
-Open:
+Then open:
 ```
-http://localhost:3000
+http://localhost:4173
 ```
-<img src="imgs/dashbaord.png" width="90%" />
+<img src="imgs/vite_preview.png" width="90%" />
 
-Click on Tasks link of left sidebar
+> localhost:4173 is the default preview port chosen by Vite.
 
-<img src="imgs/tasks.png" width="90%" />
+**Vite uses different ports for different purposes:**
+| Command                             | Purpose                  | Default Port |
+| ----------------------------------- | ------------------------ | ------------ |
+| `vite` or `npm run dev`             | Development server       | **5173**     |
+| `vite preview` or `npm run preview` | Preview production build | **4173**     |
 
-## What Happens in Dev? Why Websocket is called with Vite application ?
 
-When you run:
+## Vite Development vs Preview
+
+**Development**
 ```
 npm run dev
 ```
+Starts:
+```
+http://localhost:3000
+```
+Features:
+- HMR (Hot Module Replacement)
+- WebSocket connection
+- Fast refresh
+- Source maps
+
 with Vite:
 ```
 Browser
@@ -80,6 +114,109 @@ Vite Dev Server
 WebSocket
 ```
 Vite also opens a WebSocket connection for HMR.
+
+<img src="imgs/websocket.png" width="90%" />
+
+Vite starts:
+```
+HTTP server (serving your app)
+WebSocket connection (for live updates)
+```
+The browser connects to something like:
+```
+http://localhost:3000
+ws://localhost:3000
+```
+or
+```
+wss://localhost:3000
+```
+
+(if HTTPS is enabled).
+
+
+**Preview**
+```
+npm run preview
+```
+Starts:
+```
+http://localhost:4173
+```
+Features:
+- Serves the built dist folder
+- Simulates production
+- No HMR
+- No development transforms
+
+You can run:
+```
+vite preview --port 3000
+```
+or in package.json:
+```
+{
+  "scripts": {
+    "preview": "vite preview --port 3000"
+  }
+}
+```
+Then:
+```
+http://localhost:3000
+```
+
+## Why Vite uses WebSockets
+
+Without refreshing the page, Vite can:
+```
+Update CSS instantly
+Reload changed JavaScript modules
+Show build errors in the browser
+Preserve application state where possible
+```
+
+Example flow:
+```
+Developer saves file
+        ↓
+     Vite
+        ↓
+ WebSocket Message
+        ↓
+     Browser
+        ↓
+Replace updated module
+```
+
+## Vite Port Configure Permanently
+
+In vite.config.js:
+```
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  server: {
+    port: 5173
+  },
+
+  preview: {
+    port: 4173
+  }
+});
+```
+Or customize:
+```
+export default defineConfig({
+  server: {
+    port: 3000
+  },
+
+  preview: {
+    port: 8080
+  }
+});
+```
 
 ## Flow
 ```

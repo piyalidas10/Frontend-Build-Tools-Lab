@@ -71,7 +71,7 @@ No webpack-dev-server.
 No HMR.     
 No WebSocket (unless your application explicitly uses one).     
 
-## What Happens in Dev? Why Websocket is called with Webpack application ?
+## What Happens in Dev Server? Why Websocket is called with Webpack application ?
 
 <img src="imgs/websocket_call.png" width="90%" />
 <img src="imgs/websocket_call_open.png" width="90%" />

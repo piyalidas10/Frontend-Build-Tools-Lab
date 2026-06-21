@@ -1,23 +1,36 @@
 const esbuild = require('esbuild');
+const fs = require('fs');
+const path = require('path');
 
-esbuild.build({
-    entryPoints: ['src/main.js'],
+async function build() {
+  try {
+    await esbuild.build({
+      entryPoints: ['src/main.js'],
+      bundle: true,
+      minify: true,
+      sourcemap: true,
+      outdir: 'dist',
+      target: ['es2022'],
+      splitting: true,
+      format: 'esm',
+      loader: {
+        '.png': 'file',
+        '.jpg': 'file',
+        '.svg': 'file'
+      }
+    });
 
-    bundle: true,
+    // Copy index.html
+    fs.copyFileSync(
+      path.resolve(__dirname, 'index.html'),
+      path.resolve(__dirname, 'dist/index.html')
+    );
 
-    minify: true,
+    console.log('✅ Build Complete');
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
+}
 
-    sourcemap: true,
-
-    outdir: 'dist',
-
-    target: ['es2022'],
-
-    splitting: true,
-
-    format: 'esm'
-})
-    .then(() => {
-        console.log('Build Complete');
-    })
-    .catch(() => process.exit(1));
+build();
