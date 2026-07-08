@@ -7,7 +7,7 @@ This is even reflected in its name. It is called Vite, pronounced "veet", which 
 One of the nicest things about Vite is that it provides powerful default configurations that are tailored to your chosen framework. 
 This means you can start building your application immediately without worrying about configuring your build tool.
 
-The key features of Vite are:
+**The key features of Vite are:**    
 ⚡ Extremely fast development experience.    
 🔧 Sensible default configuration with minimal setup.    
 🏗️ Build tool (not a module bundler).    
