@@ -7,6 +7,8 @@ This is even reflected in its name. It is called Vite, pronounced "veet", which 
 One of the nicest things about Vite is that it provides powerful default configurations that are tailored to your chosen framework. 
 This means you can start building your application immediately without worrying about configuring your build tool.
 
+> Yes, Vite uses a WebSocket connection behind the scenes during local development. It primarily uses it to power Hot Module Replacement (HMR) and live page reloads, meaning your browser instantly updates whenever you make changes to your code.
+
 **The key features of Vite are:**    
 ⚡ Extremely fast development experience.    
 🔧 Sensible default configuration with minimal setup.    
@@ -74,5 +76,33 @@ For example:
 
 If an existing plugin already provides the functionality you need, you can simply install it. 
 If not, Vite also allows you to create your own custom plugins. In the course, you'll learn how to build and use them.
+
+## Does Vite use Websockets by default ?
+Yes, Vite uses WebSockets by default during development. The Vite dev server automatically opens a WebSocket connection to enable Hot Module Replacement (HMR) and live page reloads.
+
+When you run your development server, the browser listens for WebSocket events to update components instantly whenever you save changes to your code.
+
+ - Yes, Vite uses a persistent WebSocket connection between the browser and the Vite dev server.
+ - For Hot Module Replacement, the WebSocket tells the browser exactly which modules changed, allowing them to be updated without a full page reload.
+ - When HMR isn't possible, Vite uses the same WebSocket connection to instruct the browser to perform a full page reload. This combination is one of the reasons Vite provides such a fast development experience.
+
+```
+File Change Detected
+       │
+       ├──► Is it a supported module? (Vue, React, Svelte, CSS)
+       │     └───► WS Sends Update Path ──► Dynamic Native ESM Import ──► State Preserved (No Reload)
+       │
+       └──► Is it a configuration or raw file? (vite.config.ts, index.html)
+             └───► WS Sends "full-reload" ──► Browser location.reload() ──► Full Page Reload
+```
+
+**You can easily audit this behavior yourself using the standard development ecosystem:**
+1. Open your browser's DevTools (F12).
+2. Navigate directly to the Network tab.
+3. Select the WS (WebSockets) filter sub-menu.
+4. Click on the active connection string.
+5. Review the Messages pane to trace live events like update payloads or full-reload requests pushed directly from your dev environment.
+
+
 
 
