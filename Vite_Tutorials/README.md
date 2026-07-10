@@ -103,6 +103,32 @@ File Change Detected
 4. Click on the active connection string.
 5. Review the Messages pane to trace live events like update payloads or full-reload requests pushed directly from your dev environment.
 
-
+## How Vite HMR works
+```
+          Save File
+              │
+              ▼
+        Vite Dev Server
+              │
+     Detects file change (chokidar)
+              │
+              ▼
+      Transforms changed module
+              │
+              ▼
+     WebSocket HMR Message
+              │
+              ▼
+          Browser Client
+              │
+      Can HMR update?
+        │            │
+      Yes            No
+       │              │
+       ▼              ▼
+Replace only     location.reload()
+changed module   (Full page reload)
+Keep app state
+```
 
 
