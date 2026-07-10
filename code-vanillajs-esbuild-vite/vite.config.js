@@ -21,9 +21,9 @@ export default defineConfig({
             output: {
               manualChunks: {
                 vendor: ['react', 'react-dom'],
-                utils: ['lodash', 'axios'],
-              },
-            },
+                utils: ['lodash', 'axios']
+              }
+            }
         }
     },
     envPrefix: 'COOL_APP_',
