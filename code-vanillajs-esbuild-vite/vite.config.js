@@ -10,6 +10,17 @@ export default defineConfig({
   server: {
     port: 3000
   },
+  // build: {
+  //       minify: false
+  //       minify: false,
+  //       rollupOptions: {
+  //           input: {
+  //               main: resolve(__dirname, 'index.html'),
+  //               admin: resolve(__dirname, 'admin/index.html'),
+  //           }
+  //       }
+  //   },
+  //   envPrefix: 'COOL_APP_',
   // This gives you a real-time event channel between your SPA and the Vite dev server while running npm run dev.
   plugins: [
     {
