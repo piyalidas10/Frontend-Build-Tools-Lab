@@ -12,6 +12,7 @@ async function initializeApp() {
         timestamp: Date.now()
       });
     }
+    console.log('Vite default env => ", import.meta.env);
   } catch (error) {
     console.error('Application initialization failed:', error);
 
